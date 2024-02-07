@@ -1,3 +1,5 @@
+require('dotenv').config({ debug: true });
+
 const express = require('express') 
 const app = express()
 const cors = require('cors'); 
@@ -6,6 +8,7 @@ const studygroupRouter = require('./routers/studygroup')
 const notificationRouter = require('./routers/notification') 
 
 const port = process.env.PORT || 3000
+require('./db/mongoose')
 
 app.get('', (req, res) => {
     res.send("What's up, Dr. McGregor!")
