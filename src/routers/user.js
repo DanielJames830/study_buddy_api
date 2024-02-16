@@ -56,7 +56,7 @@ router.patch('/user/logout', auth, async (req, res) => {
       })
       await user.save()
 
-      res.send()
+      res.status(200).send()
   }
   catch (e) {
       res.status(500).send()
