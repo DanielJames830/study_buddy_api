@@ -1,9 +1,31 @@
-const express = require('express') 
-const router = express.Router() 
+const express = require('express')
+const auth = require('../middleware/auth')
 
-router.post('/studygroup', (req, res) => { 
-    console.log(req.body) 
-    res.status(201).send(req.body) 
-}) 
+const StudyGroup = require('../models/studygroup')
+
+const router = express.Router()
+
+router.post('/studygroup', auth, async (req, res) => {
+    delete req.body.owner
+    delete req.body.participants
+
+    console.log(req);
+
+    const user = req.user
+
+    try {
+        const group = new StudyGroup({
+            ...req.body,
+            owner: user._id
+        })
+
+        await group.save()
+        res.status(201).send()
+    }
+    catch (error) {
+        console.log(error)
+        res.status(400).send()
+    }
+})
 
 module.exports = router
