@@ -25,7 +25,7 @@ const studyGroupSchema = new Schema({
             }
         }
     },
-    meeting_times: [{
+    meeting_times : [{
         day: { type: String, enum: DAYSOFWEEK, required: true },
         time: {
             type: String,
@@ -48,6 +48,9 @@ const studyGroupSchema = new Schema({
         }
     ]
 })
+
+studyGroupSchema.index({ name: 'text', description: 'text' });
+
 
 studyGroupSchema.methods.toJSON = function () {
     const group = this
