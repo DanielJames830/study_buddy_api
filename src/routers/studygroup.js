@@ -36,6 +36,7 @@ router.get("/studygroups", auth, async (req, res) => {
 		is_public: 1,
 		max_participants: 1,
 		description: 1,
+		owner: 1,
 		start_date: 1,
 		end_date: 1,
 		meeting_times: 1,
