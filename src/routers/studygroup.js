@@ -141,12 +141,13 @@ router.patch("/studygroup/:id", auth, async (req, res) => {
 		"description",
 		"school",
 		"course_number",
-		"participants"
+		"participants",
+		"meeting_times",
 	];
 	// check that all the props are modifable
 	const isValid = props.every((prop) => modifiable.includes(prop));
 	if (!isValid) {
-		res.status(400).send("One or more invalid properties");
+		res.status(400).send("One or more invalid properties " + prop);
 		return;
 	}
 	try {
