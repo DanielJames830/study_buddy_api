@@ -61,6 +61,19 @@ router.get("/studygroups", auth, async (req, res) => {
 		}
 	}
 
+	if (req.query.hasOwnProperty("mine")) {
+		console.log('has property')
+		if (req.query.mine === "true") {
+			filter.$and.push({ owner: { $eq: req.user._id } });
+		} else {
+			filter.$and.push({
+				$or: [{ owner: { $eq: req.user._id } }, { owner: { $ne: req.user._id } }],
+			});
+		}
+	}
+
+	
+
 	if (req.query.hasOwnProperty("search")) {
 		filter.$and.push({
 			$text: {
@@ -69,7 +82,7 @@ router.get("/studygroups", auth, async (req, res) => {
 		});
 	}
 
-	console.log(JSON.stringify(filter));
+	//console.log(JSON.stringify(filter));
 
 	if (req.query.sortBy) {
 		const parts = req.query.sortBy.split(":");
