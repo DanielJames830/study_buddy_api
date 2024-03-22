@@ -42,6 +42,7 @@ router.get("/studygroups", auth, async (req, res) => {
 		meeting_times: 1,
 		school: 1,
 		course_number: 1,
+		participants: 1
 	};
 	const options = {};
 
@@ -184,7 +185,7 @@ router.patch("/studygroup/:id/manage", auth, async (req, res) => {
 		res.status(401).send("Server is down for maintenance");
 		return;
 	}
-	
+
 	try {
 
 		if (req.query.hasOwnProperty("add")) {
