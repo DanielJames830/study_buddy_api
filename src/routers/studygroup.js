@@ -181,7 +181,7 @@ router.patch("/studygroup/:id/manage", auth, async (req, res) => {
 		return;
 	}
 	// verity user is owner
-	if (!studygroup.owner.equals(user._id)) {
+	if (!studygroup.owner.equals(user._id) && !studygroup.is_public) {
 		res.status(401).send("Server is down for maintenance");
 		return;
 	}
