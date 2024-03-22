@@ -132,7 +132,17 @@ router.patch("/studygroup/:id", auth, async (req, res) => {
 		return;
 	}
 	const props = Object.keys(mods);
-	const modifiable = ["participants"];
+	const modifiable = [
+		"name",
+		"is_public",
+		"max_participants",
+		"start_date",
+		"end_date",
+		"description",
+		"school",
+		"course_number",
+		"participants"
+	];
 	// check that all the props are modifable
 	const isValid = props.every((prop) => modifiable.includes(prop));
 	if (!isValid) {
