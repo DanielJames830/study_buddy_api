@@ -172,7 +172,7 @@ router.patch("/studygroup/:id", auth, async (req, res) => {
 	}
 });
 
-router.patch("/studygroup/:id/manage", auth, async (req, res) => {
+router.patch("/studygroup/:id/participants", auth, async (req, res) => {
 	const user = req.user;
 	const studyGroupID = req.params.id;
 	const mods = req.body;
@@ -218,5 +218,39 @@ router.patch("/studygroup/:id/manage", auth, async (req, res) => {
 		res.status(500).send("Error saving study group");
 	}
 });
+
+router.delete('/studygroup/:id', auth, async (req, res) => {
+	const user = req.user
+	const studyGroupId = req.params.id
+
+	let studyGroup = null
+
+	if(!mongoose.isValidObjectId(studyGroupId)) {
+		res.status(400).send("Invalid request")
+		return
+	}
+
+	try {
+		studyGroup = await StudyGroup.findById(studyGroupId)
+
+		if (!studyGroup){
+			res.status(400).send("Study Group not found.")
+			return
+		}
+
+		if (!studyGroup.owner.equals(user._id)) {
+			res.status(401).send()
+			return
+		}
+
+		await studyGroup.deleteOne()
+
+		res.send()
+	}
+	catch(e) {
+		console.log(e)
+		res.status(500).send()
+	}
+})
 
 module.exports = router;
