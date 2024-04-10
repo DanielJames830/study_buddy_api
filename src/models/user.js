@@ -37,6 +37,7 @@ const userSchema = new Schema({
 		default: false,
 	},
 	majors: [String],
+	notifications: {type: [Schema.Types.ObjectId], ref: 'Notification', default: []},
 	tokens: [String],
 	profile_pic: Buffer,
 });
