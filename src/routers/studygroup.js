@@ -3,6 +3,7 @@ const auth = require("../middleware/auth");
 
 const StudyGroup = require("../models/studygroup");
 const mongoose = require("mongoose");
+const User = require("../models/user");
 const router = express.Router();
 
 router.post("/studygroup", auth, async (req, res) => {
@@ -218,6 +219,53 @@ router.patch("/studygroup/:id/participants", auth, async (req, res) => {
 		res.status(500).send("Error saving study group");
 	}
 });
+
+router.get("/studygroup/:id/participants", auth, async (req, res) => {
+    const user = req.user;
+    const studyGroupID = req.params.id;
+    
+    let studygroup = undefined;
+    if (!mongoose.isValidObjectId(studyGroupID)) {
+        res.status(400).send("Invalid object id");
+        return;
+    }
+    try {
+        studygroup = await StudyGroup.findById(studyGroupID);
+        if (!studygroup) {
+            res.status(400).send("Invalid study group id");
+            return;
+        }
+
+        let owner = await User.findById(studygroup.owner);
+        if (!owner) {
+            res.status(400).send("Invalid owner id");
+            return;
+        }
+
+        let filter = {
+            _id: { $in: studygroup.participants },
+        };
+
+        const projection = {
+            username: 1,
+            _id: 0,
+        };
+
+        const participants = await User.find(filter, projection);
+
+        const response = {
+            owner: owner.username,
+            participants: participants.map(participant => participant.username),
+        };
+
+        res.status(200).json(response);
+
+    } catch (e) {
+        res.status(500).send("Error finding study group");
+        return;
+    }
+});
+
 
 router.delete('/studygroup/:id', auth, async (req, res) => {
 	const user = req.user
