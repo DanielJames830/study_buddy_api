@@ -255,7 +255,7 @@ router.get("/studygroup/:id/participants", auth, async (req, res) => {
 
         const response = {
             owner: owner.username,
-            participants: participants.map(participant => participant.username),
+            participants: participants.map(participant => participant),
         };
 
         res.status(200).json(response);
