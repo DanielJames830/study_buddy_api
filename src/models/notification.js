@@ -10,6 +10,7 @@ NOTIFICATIONTYPE = [
  ]
 
 const notificationSchema = new Schema({
+    sender: { type: Schema.Types.ObjectId, ref: 'User', required: true },
     receiver: { type: Schema.Types.ObjectId, ref: 'User', required: true },
     is_read: { type: Boolean, default: false },
     body: {type: String, required: true},

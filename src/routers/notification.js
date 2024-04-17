@@ -46,4 +46,22 @@ router.post("/notification", auth, async (req, res) => {
 	}
 });
 
+router.get('/notifications', async (req, res) => {
+	try {
+	  const { notifications } = req.body;
+  
+	  if (!notifications || !Array.isArray(notifications)) {
+		return res.status(400).json({ error: 'Invalid notifications array provided in request body' });
+	  }
+  
+	  // Query MongoDB for notifications with matching ids
+	  const foundNotifications = await Notification.find({ _id: { $in: notifications } });
+  
+	  res.json(foundNotifications);
+	} catch (err) {
+	  console.error(err);
+	  res.status(500).json({ error: 'Server error' });
+	}
+  });
+
 module.exports = router
