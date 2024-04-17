@@ -7,37 +7,33 @@ const User = require("../models/user");
 const router = express.Router();
 
 router.post("/notification", auth, async (req, res) => {
+	const receiverId = req.body.receiver;
 
-    const receiverId = req.body.receiver;
-
-    if (!mongoose.isValidObjectId(receiverId)) {
-        console.log(receiverId)
+	if (!mongoose.isValidObjectId(receiverId)) {
+		console.log(receiverId);
 		res.status(400).send("Invalid object id");
 		return;
 	}
 
 	try {
-        
 		const notification = new Notification({
 			...req.body,
 		});
 
-        user = await User.findById(receiverId);
-        if (!user) {
+		user = await User.findById(receiverId);
+		if (!user) {
 			res.status(400).send("Invalid recipiant ID");
 			return;
 		}
 
-        if(user['notifications'] === null) {
-            user['notifications'] = []
-        }
-
-      
+		if (user["notifications"] === null) {
+			user["notifications"] = [];
+		}
 
 		await notification.save();
-        user['notifications'].push(notification._id)
-        
-        await user.save();
+		user["notifications"].push(notification._id);
+
+		await user.save();
 
 		res.status(201).send(notification);
 	} catch (error) {
@@ -46,22 +42,29 @@ router.post("/notification", auth, async (req, res) => {
 	}
 });
 
-router.get('/notifications', async (req, res) => {
+router.get("/notifications/:id/", async (req, res) => {
 	try {
-	  const { notifications } = req.body;
-  
-	  if (!notifications || !Array.isArray(notifications)) {
-		return res.status(400).json({ error: 'Invalid notifications array provided in request body' });
-	  }
-  
-	  // Query MongoDB for notifications with matching ids
-	  const foundNotifications = await Notification.find({ _id: { $in: notifications } });
-  
-	  res.json(foundNotifications);
-	} catch (err) {
-	  console.error(err);
-	  res.status(500).json({ error: 'Server error' });
-	}
-  });
+		const user = await User.findById(req.params.id);
+		const notifications  = user.notifications;
 
-module.exports = router
+		if (!notifications || !Array.isArray(notifications)) {
+			return res
+				.status(400)
+				.json({
+					error: "Invalid notifications array provided in request body",
+				});
+		}
+
+		// Query MongoDB for notifications with matching ids
+		const foundNotifications = await Notification.find({
+			_id: { $in: notifications },
+		});
+
+		res.json(foundNotifications);
+	} catch (err) {
+		console.error(err);
+		res.status(500).json({ error: "Server error" });
+	}
+});
+
+module.exports = router;
