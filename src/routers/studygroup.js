@@ -248,14 +248,14 @@ router.get("/studygroup/:id/participants", auth, async (req, res) => {
 
         const projection = {
             username: 1,
-            _id: 0,
+            _id: 1,
         };
 
         const participants = await User.find(filter, projection);
 
         const response = {
             owner: owner.username,
-            participants: participants.map(participant => participant),
+            participants: participants,
         };
 
         res.status(200).json(response);
