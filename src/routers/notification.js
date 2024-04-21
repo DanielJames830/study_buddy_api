@@ -60,6 +60,10 @@ router.get("/notifications/:id/", async (req, res) => {
 			_id: { $in: notifications },
 		});
 
+		foundNotifications.map(async (notification) => {
+			notification['sender'] = await User.findById(notification['sender'])['username'];
+		});
+
 		res.json(foundNotifications);
 	} catch (err) {
 		console.error(err);
