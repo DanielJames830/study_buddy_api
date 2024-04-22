@@ -2,6 +2,7 @@ const express = require("express");
 const auth = require("../middleware/auth");
 const mongoose = require("mongoose");
 const User = require("../models/user");
+const https = require('https');
 const { IgApiClient } = require("instagram-private-api");
 
 const router = express.Router();
@@ -29,21 +30,20 @@ const postToInsta = async (user, data) => {
 
   try {
     const ig = new IgApiClient();
+    console.log("Ig client made");
     ig.state.generateDevice(user.ig_username);
+    console.log("device generated");
     await ig.account.login(user.ig_username, user.ig_password);
-
-    const imageBuffer = await get({
-      url: data.image_url,
-      encoding: null,
-    });
-
+    console.log("login successful");
+    const imageBuffer = await getImage(data.image_url)
     await ig.publish.photo({
       file: imageBuffer,
       caption: data.caption,
     });
+    console.log("photo published");
     return true;
   } catch (e) {
-    console.log("unable to post to instagram :(");
+    console.log(e);
     return false;
   }
 };
@@ -77,4 +77,25 @@ router.patch("/user/sp/insta", auth, async (reg, res) => {
     res.status(400).send("unable to add instagram info");
   }
 });
+
+
+async function getImage(url) {
+  return new Promise((resolve, reject) => {
+    https.get(url, (response) => {
+      let data = Buffer.from('');
+      
+      response.on('data', (chunk) => {
+        data = Buffer.concat([data, chunk]);
+      });
+
+      response.on('end', () => {
+        resolve(data);
+      });
+    }).on('error', (error) => {
+      reject(error);
+    });
+  });
+}
+
+
 module.exports = router;
