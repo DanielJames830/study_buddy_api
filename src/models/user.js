@@ -36,6 +36,16 @@ const userSchema = new Schema({
 		type: Boolean,
 		default: false,
 	},
+	ig_username: {
+		type: String,
+		default: false,
+	},
+	ig_password: {
+		type: String,
+		trim: true,
+		minLength: 8,
+		default: false,
+	},
 	majors: [String],
 	notifications: {type: [Schema.Types.ObjectId], ref: 'Notification', default: []},
 	tokens: [String],

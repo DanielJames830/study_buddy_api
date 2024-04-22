@@ -6,7 +6,7 @@ const cors = require('cors');
 const userRouter = require('./routers/user') 
 const studygroupRouter = require('./routers/studygroup') 
 const notificationRouter = require('./routers/notification') 
-
+const instaRouter = require('./routers/insta') 
 const port = process.env.PORT || 3000
 require('./db/mongoose')
 
