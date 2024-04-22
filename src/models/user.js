@@ -42,8 +42,6 @@ const userSchema = new Schema({
 	},
 	ig_password: {
 		type: String,
-		trim: true,
-		minLength: 8,
 		default: false,
 	},
 	majors: [String],
@@ -59,6 +57,7 @@ userSchema.pre('save', async function(next) {
   if (user.isModified('password')) {
     user.password = await bcrypt.hash(user.password, 8)
   }
+  
   
   next()  // run the save() method
 })
