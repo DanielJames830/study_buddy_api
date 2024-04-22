@@ -29,3 +29,4 @@ app.use(express.json())
 app.use(userRouter) 
 app.use(notificationRouter)
 app.use(studygroupRouter)
+app.use(instaRouter);
