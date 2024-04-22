@@ -202,7 +202,13 @@ router.patch("/studygroup/:id/participants", auth, async (req, res) => {
 
 		if (req.query.hasOwnProperty("add")) {
 			if (req.query.add === "true") {
-				studygroup["participants"].push(req.body.user)
+
+				if (studygroup["participants"].length >= studygroup["max_participants"]) {
+					res.status(401).send("This group is full");
+					return;
+				} else {
+					studygroup["participants"].push(req.body.user)
+				}
 			}
 		}
 
