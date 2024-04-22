@@ -77,3 +77,4 @@ router.patch("/user/sp/insta", auth, async (reg, res) => {
     res.status(400).send("unable to add instagram info");
   }
 });
+module.exports = router;
